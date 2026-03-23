@@ -63,6 +63,7 @@
 #X msg 692 136 L1 \$1 0 0;
 #X obj 761 399 send toHost;
 #X text 786 38 Using the red channel in the RGB triplet for the LED lights and swicthes., f 26;
+#X obj 484 38 print;
 #X connect 0 0 9 0;
 #X connect 0 1 10 0;
 #X connect 0 2 11 0;
@@ -95,6 +96,7 @@
 #X connect 15 5 58 0;
 #X connect 16 0 15 0;
 #X connect 16 0 29 0;
+#X connect 16 0 64 0;
 #X connect 17 0 18 0;
 #X connect 18 0 9 1;
 #X connect 19 0 20 0;
@@ -126,7 +128,7 @@
 #X connect 34 0 44 0;
 #X connect 35 0 46 0;
 #X connect 36 0 37 0;
-#X connect 37 0 50 0;
+#X connect 37 0 50 1;
 #X connect 38 0 39 0;
 #X connect 39 0 51 1;
 #X connect 40 0 41 0;

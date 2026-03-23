@@ -256,7 +256,9 @@ void LibPDEngine::receiveToRack(const char* source, const char* symbol, int argc
         for (int i = 0; i < argc; i++) {
             if (i > 0) engine->_utility[1] += " ";
             if (libpd_is_float(&argv[i])) {
-                engine->_utility[1] += std::to_string(libpd_get_float(&argv[i]));
+                char buf[32];
+                snprintf(buf, sizeof(buf), "%g", libpd_get_float(&argv[i]));
+                engine->_utility[1] += buf;
             } else if (libpd_is_symbol(&argv[i])) {
                 engine->_utility[1] += libpd_get_symbol(&argv[i]);
             }
@@ -861,20 +863,6 @@ struct MessageChoice : LedDisplayChoice {
             text = "Running Pd-" + version;
         }
     }
-
-/*	void draw(const DrawArgs& args) override {
-		nvgScissor(args.vg, RECT_ARGS(args.clipBox));
-		if (font->handle >= 0) {
-			nvgFillColor(args.vg, color);
-			nvgFontFaceId(args.vg, font->handle);
-			nvgTextLetterSpacing(args.vg, 0.0);
-			nvgTextLineHeight(args.vg, 1.08);
-
-			nvgFontSize(args.vg, 12);
-			nvgTextBox(args.vg, textOffset.x, textOffset.y, box.size.x - textOffset.x, text.c_str(), NULL);
-		}
-		nvgResetScissor(args.vg);
-	}*/
 
     void draw(const DrawArgs& args) override {
         nvgScissor(args.vg, RECT_ARGS(args.clipBox));

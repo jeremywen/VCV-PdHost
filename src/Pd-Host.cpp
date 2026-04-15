@@ -24,6 +24,14 @@ static const int MAX_BUFFER_SIZE = 4096;
 
 struct PureData;
 
+// At the top of the file, after includes
+static struct DebugLogger {
+    DebugLogger() {
+        fprintf(stderr, ">>> GLOBAL DebugLogger constructor called\n");
+        INFO("INFO >>> GLOBAL DebugLogger constructor called\n");
+    }
+} g_debugLogger;
+
 // Forward declaration for MIDI hook
 /*void midiByteHook(int port, int byte);
 void midiNoteHook(int channel, int pitch, int velocity);
@@ -122,6 +130,7 @@ struct LibPDEngine : ScriptEngine{
         _sampleRate = (int)APP->engine->getSampleRate();
         setBufferSize(_pd_block_size);
         setFrameDivider(1);
+        fprintf(stderr, ">>> calling libpd_init()\n");
         libpd_init();
         
 // Set ELSE's path
@@ -140,8 +149,9 @@ struct LibPDEngine : ScriptEngine{
         } else {
             fprintf(stderr, "NOT FOUND\n");
         }*/
-        
+        fprintf(stderr, ">>> calling libpd_init()\n");
         _lpd = libpd_new_instance();
+        fprintf(stderr, ">>> libpd_new_instance done\n");
 
         // Set thread-local variable to track current engine for callbacks
         g_current_engine = this;
@@ -167,9 +177,12 @@ struct LibPDEngine : ScriptEngine{
         libpd_start_message(1); // one entry in list
         libpd_add_float(1.0f);
         libpd_finish_message("pd", "dsp");
+        
         std::string name = system::getFilename(path);
         std::string dir  = system::getDirectory(path);
+        fprintf(stderr, ">>> path='%s' name='%s' dir='%s'\n", path.c_str(), name.c_str(), dir.c_str());
         libpd_openfile(name.c_str(), dir.c_str());
+        fprintf(stderr, ">>> libpd_openfile done\n");
 
         sendInitialStates(block);
 
@@ -449,23 +462,39 @@ struct PureData : Module {
 	bool securityRequested = false;
 	bool securityAccepted = false;
     
-
-
-	PureData() {
-		config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
-		for (int i = 0; i < N_IN_OUT; i++)
-			configParam(KNOB_PARAMS + i, 0.f, 1.f, 0.5f, string::f("Knob %d", i + 1));
-		for (int i = 0; i < N_IN_OUT; i++)
-			configParam(SWITCH_PARAMS + i, 0.f, 1.f, 0.f, string::f("Switch %d", i + 1));
-		// for (int i = 0; i < N_IN_OUT; i++)
-		// 	configInput(IN_INPUTS + i, string::f("#%d", i + 1));
-		// for (int i = 0; i < N_IN_OUT; i++)
-		// 	configOutput(OUT_OUTPUTS + i, string::f("#%d", i + 1));
-
-		block = new ProcessBlock;
-		setPath("");
+    PureData() {
+        fprintf(stderr, ">>> PureData constructor START\n");
+        INFO("INFO >>> PureData constructor START");
         
-	}
+        config(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS);
+        fprintf(stderr, ">>> after config\n");
+        INFO("INFO >>> after config");
+        
+        for (int i = 0; i < N_IN_OUT; i++)
+            configParam(KNOB_PARAMS + i, 0.f, 1.f, 0.5f, string::f("Knob %d", i + 1));
+        for (int i = 0; i < N_IN_OUT; i++)
+            configParam(SWITCH_PARAMS + i, 0.f, 1.f, 0.f, string::f("Switch %d", i + 1));
+        // for (int i = 0; i < N_IN_OUT; i++)
+        //     configInput(IN_INPUTS + i, string::f("#%d", i + 1));
+        // for (int i = 0; i < N_IN_OUT; i++)
+        //     configOutput(OUT_OUTPUTS + i, string::f("#%d", i + 1));
+
+        fprintf(stderr, ">>> after configParam loops\n");
+        INFO("INFO >>> after configParam loops");
+
+        fprintf(stderr, ">>> about to allocate block\n");
+        INFO("INFO >>> about to allocate block\n");
+        
+        block = new ProcessBlock;
+        fprintf(stderr, ">>> block allocated\n");
+        INFO("INFO >>> block allocated");
+        
+        fprintf(stderr, ">>> about to call setPath\n");
+        INFO("INFO >>> about to call setPath");
+        setPath("");
+        fprintf(stderr, ">>> PureData constructor DONE\n");
+        INFO("INFO >>> PureData constructor DONE");
+    }
 
 	~PureData() {
 		setPath("");
@@ -1326,7 +1355,9 @@ struct PureDataDisplay : LedDisplay {
 
 struct PureDataWidget : ModuleWidget {
 	PureDataWidget(PureData* module) {
-		setModule(module);
+        fprintf(stderr, ">>> PureDataWidget constructor START\n");
+        INFO("INFO >>>  PureDataWidget constructor START\n");
+        setModule(module);
 		setPanel(APP->window->loadSvg(asset::plugin(pluginInstance, "res/Pd-Host.svg")));
 
 		addChild(createWidget<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
@@ -1377,6 +1408,8 @@ struct PureDataWidget : ModuleWidget {
 		PureDataDisplay* display = createWidget<PureDataDisplay>(mm2px(Vec(3.16, 14.837)));
 		display->setModule(module);
 		addChild(display);
+        fprintf(stderr, ">>> PureDataWidget constructor END\n");
+        INFO("INFO >>> PureDataWidget constructor END\n");
 	}
 
 	void appendContextMenu(Menu* menu) override {
@@ -1408,8 +1441,15 @@ struct PureDataWidget : ModuleWidget {
 };
 
 void init(Plugin* p) {
-	pluginInstance = p;
-
-	p->addModel(createModel<PureData, PureDataWidget>("Pd-Host"));
-	settingsLoad();
+    fprintf(stderr, ">>> init() called\n");
+    INFO("INFO >>> init() called\n");
+    pluginInstance = p;
+    fprintf(stderr, ">>> about to addModel\n");
+    INFO("INFO >>> about to addModel\n");
+    p->addModel(createModel<PureData, PureDataWidget>("Pd-Host"));
+    fprintf(stderr, ">>> addModel done\n");
+    INFO("INFO >>> addModel done\n");
+    settingsLoad();
+    fprintf(stderr, ">>> settingsLoad done\n");
+    INFO("INFO >>> settingsLoad done\n");
 }

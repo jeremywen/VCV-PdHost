@@ -470,10 +470,16 @@ struct PureData : Module {
         fprintf(stderr, ">>> after config\n");
         INFO("INFO >>> after config");
         
-        for (int i = 0; i < N_IN_OUT; i++)
+        for(int i = 0; i < N_IN_OUT; i++){
+            INFO("INFO >>> creating knob %d of %d", i, N_IN_OUT);
             configParam(KNOB_PARAMS + i, 0.f, 1.f, 0.5f, string::f("Knob %d", i + 1));
-        for (int i = 0; i < N_IN_OUT; i++)
+        }
+        INFO("INFO >>> after KNOB_PARAMS");
+        for(int i = 0; i < N_IN_OUT; i++){
+            INFO("INFO >>> creating switch %d of %d", i, N_IN_OUT);
             configParam(SWITCH_PARAMS + i, 0.f, 1.f, 0.f, string::f("Switch %d", i + 1));
+        }
+        INFO("INFO >>> after SWITCH_PARAMS");
         // for (int i = 0; i < N_IN_OUT; i++)
         //     configInput(IN_INPUTS + i, string::f("#%d", i + 1));
         // for (int i = 0; i < N_IN_OUT; i++)

@@ -463,36 +463,13 @@ struct PureData : Module {
 		block = new ProcessBlock;
 		setPath("");
 
-// MIDI
-        midiInput.setDriverId(0);
-        fprintf(stderr, "MIDI Input driver set to: %s\n", midiInput.getDriver()->getName().c_str());
-        // List available drivers
+// List available MIDI drivers/devices for debugging
         auto driverIds = midi::getDriverIds();
-        fprintf(stderr, "Available MIDI Input drivers:\n");
+        fprintf(stderr, "Available MIDI drivers:\n");
         for (int id : driverIds) {
             midi::Driver* driver = midi::getDriver(id);
             if (driver) {
                 fprintf(stderr, "  %d: %s\n", id, driver->getName().c_str());
-            }
-        }
-        auto deviceIds = midiInput.getDeviceIds();
-        if (deviceIds.empty()) {
-            fprintf(stderr, "No MIDI input devices found\n");
-        } else {
-            fprintf(stderr, "MIDI input devices:\n");
-            for (size_t i = 0; i < deviceIds.size(); i++) {
-                fprintf(stderr, "  %zu: %s\n", i, midiInput.getDeviceName(deviceIds[i]).c_str());
-            }
-        }
-        // List MIDI output devices
-        fprintf(stderr, "MIDI output driver: %s\n", midiOutput.getDriver()->getName().c_str());
-        auto outDeviceIds = midiOutput.getDeviceIds();
-        if (outDeviceIds.empty()) {
-            fprintf(stderr, "No MIDI output devices found\n");
-        } else {
-            fprintf(stderr, "MIDI output devices:\n");
-            for (size_t i = 0; i < outDeviceIds.size(); i++) {
-                fprintf(stderr, "  %zu: %s\n", i, midiOutput.getDeviceName(outDeviceIds[i]).c_str());
             }
         }
 	}

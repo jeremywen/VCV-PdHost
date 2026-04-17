@@ -778,8 +778,9 @@ struct PureData : Module {
         frameDivider = 32;
         frame = 0;
         buf_idx = 0;
-        // Reset block
-        *block = ProcessBlock();
+        // Reset block (avoid stack allocation of ~192KB temporary which causes stack overflow on Windows)
+        memset(block, 0, sizeof(ProcessBlock));
+        block->bufferSize = 1;
 
         if (script == "")
             return;

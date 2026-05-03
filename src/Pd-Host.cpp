@@ -663,16 +663,8 @@ struct PureData : Module {
 //		for (int i = 0; i < N_IN_OUT; i++)
 //			outputs[OUT_OUTPUTS + i].setVoltage(block->outputs[i][buf_idx]);
         for(int i = 0; i < N_IN_OUT; i++){
-            int ch = inputs[IN_INPUTS+i].getChannels();
-            if(ch > 1)
-                ch = 1;
-            for(int c = 0; c < 1; c++){
-                float v = 0.f;
-                if(c < ch)
-                    v = block->outputs[i*1+c][buf_idx];
-                outputs[OUT_OUTPUTS + i].setVoltage(v, c);
-            }
-            outputs[OUT_OUTPUTS + i].setChannels(ch);
+            outputs[OUT_OUTPUTS + i].setVoltage(block->outputs[i][buf_idx], 0);
+            outputs[OUT_OUTPUTS + i].setChannels(1);
         }
 	}
 

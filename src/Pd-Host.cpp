@@ -25,13 +25,13 @@ static const int MAX_BUFFER_SIZE = 4096;
 struct PureData;
 
 // Forward declaration for MIDI hook
-/*void midiByteHook(int port, int byte);
+void midiByteHook(int port, int byte);
 void midiNoteHook(int channel, int pitch, int velocity);
 void midiControlChangeHook(int channel, int controller, int value);
 void midiProgramChangeHook(int channel, int value);
 void midiPitchBendHook(int channel, int value);
 void midiAfterTouchHook(int channel, int value);
-void midiPolyAfterTouchHook(int channel, int pitch, int value);*/
+void midiPolyAfterTouchHook(int channel, int pitch, int value);
 
 struct ProcessBlock{
     float sampleRate = 0.f;
@@ -157,13 +157,13 @@ struct LibPDEngine : ScriptEngine{
         libpd_init_audio(N_IN_OUT, N_IN_OUT, _sampleRate);
         libpd_bind("toHost");
        
-/*        libpd_set_midibytehook(midiByteHook);
+        libpd_set_midibytehook(midiByteHook);
         libpd_set_noteonhook(midiNoteHook);
         libpd_set_controlchangehook(midiControlChangeHook);
         libpd_set_programchangehook(midiProgramChangeHook);
         libpd_set_pitchbendhook(midiPitchBendHook);
         libpd_set_aftertouchhook(midiAfterTouchHook);
-        libpd_set_polyaftertouchhook(midiPolyAfterTouchHook);*/
+        libpd_set_polyaftertouchhook(midiPolyAfterTouchHook);
 
         // compute audio    [; pd dsp 1(
         libpd_start_message(1); // one entry in list
@@ -419,7 +419,6 @@ struct PureData : Module {
 		NUM_LIGHTS
 	};
 
-/*
     // midi in
     midi::InputQueue midiInput;
     uint8_t runningStatus = 0;
@@ -434,7 +433,6 @@ struct PureData : Module {
     uint8_t midiDataBuffer[2] = {0, 0};
     int midiDataIndex = 0;
     int midiDataBytesNeeded = 0;
-*/
     
 	std::string message;
 	std::string path;
@@ -517,7 +515,7 @@ struct PureData : Module {
 				outputs[OUT_OUTPUTS + i].setVoltage(0.f);
 			return;
 		}
-/*
+
         // Process MIDI input
         midi::Message msg;
         while (midiInput.tryPop(&msg, args.frame)) {
@@ -599,7 +597,7 @@ struct PureData : Module {
                     }
                 }
             }
-        }*/
+        }
 // Inputs
 //        for(int i = 0; i < N_IN_OUT; i++)
 //            block->inputs[i][buf_idx] = inputs[IN_INPUTS + i].getVoltage();
@@ -918,7 +916,7 @@ struct PureData : Module {
     
 };
 
-/*void midiByteHook(int port, int byte) {
+void midiByteHook(int port, int byte) {
     LibPDEngine* engine = g_current_engine;
     if (!engine || !engine->module) return;
     
@@ -1046,7 +1044,7 @@ void midiPolyAfterTouchHook(int channel, int pitch, int value) {
     msg.bytes[1] = pitch;
     msg.bytes[2] = value;
     module->midiOutput.sendMessage(msg);
-}*/
+}
 
 void LibPDEngine::send_toHost(const char* source, const char* symbol, int argc, t_atom* argv) {
     LibPDEngine* engine = g_current_engine;
@@ -1056,7 +1054,6 @@ void LibPDEngine::send_toHost(const char* source, const char* symbol, int argc, 
     
     std::string selector = symbol;
     
-/*
 // Handle MIDI
     if(selector == "midiinit"){ // MIDI check and initialization to default
         auto driverIds = midi::getDriverIds();
@@ -1191,7 +1188,7 @@ void LibPDEngine::send_toHost(const char* source, const char* symbol, int argc, 
         }
         return;
     }
-    */
+
 // Handle lights
     int light_idx = -1;
     try {
